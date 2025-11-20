@@ -5,6 +5,8 @@ import gc
 import time
 import csv
 import torch
+from glob import glob
+
 
 # Local module imports
 from seed import set_seed
@@ -53,11 +55,24 @@ if __name__ == "__main__":
     set_seed()
     DATA_PATH = "data"
 
-    # read all test cases
-    with open(os.path.join(DATA_PATH, "public_test.json")) as f:
-        test_cases = json.load(f)["data"]
-    for case in test_cases:
-        case["video_path"] = case["video_path"].replace("public_test", "data")
+    # Lấy tất cả file JSON trong thư mục data
+    json_files = glob(os.path.join(DATA_PATH, "*.json"))
+
+    test_cases = []
+
+    for json_file in json_files:
+        with open(json_file, "r", encoding="utf-8") as f:
+            data = json.load(f)["data"]
+            for case in data:
+                # Chia path thành các phần
+                parts = case["video_path"].split(os.sep)
+                # Thay phần đầu tiên bằng 'data'
+                parts[0] = DATA_PATH
+                # Ghép lại thành path mới
+                case["video_path"] = os.sep.join(parts)
+            test_cases.extend(data)
+
+    print(f"Tổng số test case: {len(test_cases)}")
 
     all_time = []
     all_result = []
@@ -72,23 +87,25 @@ if __name__ == "__main__":
 
         # make conversation
         messages = make_conversation(item, top_frames)
-        print(time.time() - start_time)
+
         # inference 
         output_text = inference(messages, model_path)
+
         # Lấy kí tự đầu tiên của output_text
         pred = output_text[0][0]
         if pred not in ["A", "B", "C", "D"] or pred is None: 
             pred = "A"
+
         all_time.append(time.time() - start_time)
         all_result.append(pred)
+
+        print(item["id"], pred)
 
 
     # save result 
     # prepare data for saving
     time_submission_data = []
     submission_data = []
-    PATH_SAVE = "results"
-    os.makedirs(PATH_SAVE, exist_ok=True)
 
     for item, pred, t in zip(test_cases, all_result, all_time):
         time_ms = int(t * 1000)  # convert seconds to milliseconds
@@ -109,11 +126,6 @@ if __name__ == "__main__":
         writer.writerow(["id", "answer"])  # header
         writer.writerows(submission_data)
 
-    print(f"CSV files saved successfully! at {PATH_SAVE}")
-
-
-
-
-    
+    print(f"CSV files saved successfully! at result")
 
 

@@ -80,9 +80,6 @@ if __name__ == "__main__":
             pred = "A"
         output.append(pred)
 
-        # voting
-
-
         all_time.append(time.time() - start_time)
         all_result.append(pred)
     
