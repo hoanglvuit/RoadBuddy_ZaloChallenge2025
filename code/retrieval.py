@@ -43,7 +43,7 @@ def read_video_frames(video_path, fps_target=15):
 def get_top3_diverse_frames_parallel(
     video_path: str,
     caption: str,
-    model_path: str = "saved_models/clip_model",
+    model_path: str = "code/saved_models/clip_model",
     fps_target: int = 15,
     batch_size: int = 256,
 ):

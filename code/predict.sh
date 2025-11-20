@@ -1,1 +1,1 @@
-python predict.py
+python3 code/predict.py

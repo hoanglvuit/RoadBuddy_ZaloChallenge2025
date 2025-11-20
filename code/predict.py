@@ -45,20 +45,24 @@ def inference(messages, model_path="saved_models/qwen3vl-8b"):
     return output_text
 
 if __name__ == "__main__":
+    if not os.path.exists("data"):
+        os.makedirs("data")
+    if not os.path.exists("result"):
+        os.makedirs("result")
     # define 
     set_seed()
     DATA_PATH = "data"
 
     # read all test cases
     with open(os.path.join(DATA_PATH, "public_test.json")) as f:
-        test_cases = json.load(f)["data"][:5]
+        test_cases = json.load(f)["data"]
     for case in test_cases:
         case["video_path"] = case["video_path"].replace("public_test", "data")
 
     all_time = []
     all_result = []
     # sửa ở đây ---------------------------------------------fsaasdadsad
-    model_path = "saved_models/qwen3vl-8b"
+    model_path = "code/saved_models/qwen3vl-8b"
     # run 
     for item in test_cases:
         start_time = time.time()
