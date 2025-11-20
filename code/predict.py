@@ -78,6 +78,10 @@ if __name__ == "__main__":
     all_result = []
     # sửa ở đây ---------------------------------------------fsaasdadsad
     model_path = "code/saved_models/qwen3vl-8b"
+    # chạy thử lần đầu không tính vào kq (để cache)
+    top_frames, top_scores = get_top3_diverse_frames_parallel(test_cases[0]["video_path"], test_cases[0]["question"])
+    print(top_scores)
+    output_text = inference(make_conversation(test_cases[0], top_frames), model_path)
     # run 
     for item in test_cases:
         start_time = time.time()
