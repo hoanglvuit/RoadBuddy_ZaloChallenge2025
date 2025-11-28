@@ -12,7 +12,7 @@ from PIL import Image
 from predict import get_top4_frames
 from loss import clip_loss_with_negatives
 from tqdm import tqdm
-
+from transformers import AutoImageProcessor, AutoModel
 
 set_seed(22520465)
 
@@ -102,10 +102,18 @@ if __name__ == "__main__":
         # Epoch summary
         avg_loss = total_loss / max(count, 1)
         print(f"✅ Epoch {epoch+1}/{num_epochs} - Epoch Avg Loss: {avg_loss:.4f}")
+    
+    # Lưu model
+    model.save_pretrained(output_path)
+    processor.save_pretrained(output_path)
+    print(f"🎉 Fine-tune CLIP xong, model lưu tại {output_path}")
 
         
     # evaluation 
     if val_list:
+
+        processor = AutoImageProcessor.from_pretrained('facebook/dinov2-large')
+        model = AutoModel.from_pretrained('facebook/dinov2-large')
         sim_95_score = 0 
         sim_96_score = 0 
         sim_97_score = 0 
@@ -138,8 +146,4 @@ if __name__ == "__main__":
         print(f"Top 4 Frames: {top_4_frames}")
         print(f"Top Scores: {top_scores}")
 
-    # Lưu model
-    model.save_pretrained(output_path)
-    processor.save_pretrained(output_path)
-    print(f"🎉 Fine-tune CLIP xong, model lưu tại {output_path}")
 
