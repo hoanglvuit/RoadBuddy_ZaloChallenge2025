@@ -31,8 +31,8 @@ def extract_true_and_negative_frames_fast(
         data = json.load(f)["data"]
 
     os.makedirs(output_folder, exist_ok=True)
-    true_root = os.path.join(output_folder, "true_frames")
-    neg_root = os.path.join(output_folder, "false_frames")
+    true_root = os.path.join(output_folder, "frames_true")
+    neg_root = os.path.join(output_folder, "frames_neg")
     os.makedirs(true_root, exist_ok=True)
     os.makedirs(neg_root, exist_ok=True)
 
