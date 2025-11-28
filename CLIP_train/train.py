@@ -7,6 +7,12 @@ import os
 import torch
 import math
 from transformers import get_cosine_schedule_with_warmup
+from evaluate import sim_m
+from PIL import Image
+from in_video_negative_mining import get_top4_frames
+from loss import clip_loss_with_negatives
+from tqdm import tqdm
+
 
 set_seed(22520465)
 
@@ -18,6 +24,7 @@ if __name__ == "__main__":
     parser.add_argument("--setting", type=int, default=1)
     parser.add_argument("--output_path", type=str, default="saved_models/clip-finetuned-posneg")
     parser.add_argument("--ratio", type=float, default=0.2)
+    parser.add_argument("--model_name", type=str, default="openai/clip-vit-large-patch14")
 
     args = parser.parse_args()
     json_path = args.json_path
