@@ -115,13 +115,11 @@ if __name__ == "__main__":
         sim_97_score += sim_m(top_4_frames, true_frames, model, processor, 0.97)
         sim_98_score += sim_m(top_4_frames, true_frames, model, processor, 0.98)
         sim_99_score += sim_m(top_4_frames, true_frames, model, processor, 0.99)
-        sim_100_score += sim_m(top_4_frames, true_frames, model, processor, 1.00)
     print(f"Sim 95 Score: {sim_95_score / len(val_list)}")
     print(f"Sim 96 Score: {sim_96_score / len(val_list)}")
     print(f"Sim 97 Score: {sim_97_score / len(val_list)}")
     print(f"Sim 98 Score: {sim_98_score / len(val_list)}")
     print(f"Sim 99 Score: {sim_99_score / len(val_list)}")
-    print(f"Sim 100 Score: {sim_100_score / len(val_list)}")
 
     # Lưu model
     model.save_pretrained(output_path)
