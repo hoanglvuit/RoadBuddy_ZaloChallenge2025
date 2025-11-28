@@ -7,6 +7,8 @@ from torch.nn.functional import cosine_similarity
 import cv2
 from transformers import CLIPModel, CLIPProcessor
 import json
+from utils import set_seed
+set_seed(42)
 
 def extract_true_and_negative_frames_fast(
     input_folder,
