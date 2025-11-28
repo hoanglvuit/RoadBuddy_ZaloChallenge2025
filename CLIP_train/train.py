@@ -17,6 +17,8 @@ if __name__ == "__main__":
     parser.add_argument("--image_path", type=str, default="dataset")
     parser.add_argument("--setting", type=int, default=1)
     parser.add_argument("--output_path", type=str, default="saved_models/clip-finetuned-posneg")
+    parser.add_argument("--ratio", type=float, default=0.2)
+
     args = parser.parse_args()
     json_path = args.json_path
     image_path = args.image_path
@@ -93,33 +95,34 @@ if __name__ == "__main__":
 
         
     # evaluation 
-    sim_95_score = 0 
-    sim_96_score = 0 
-    sim_97_score = 0 
-    sim_98_score = 0 
-    sim_99_score = 0 
-    for val in val_list: 
-        caption = val["caption"]
-        video_path = val["video_path"]
-        pos_path = val["pos_path"]
+    if val_list:
+        sim_95_score = 0 
+        sim_96_score = 0 
+        sim_97_score = 0 
+        sim_98_score = 0 
+        sim_99_score = 0 
+        for val in val_list: 
+            caption = val["caption"]
+            video_path = val["video_path"]
+            pos_path = val["pos_path"]
 
-        # get true frames
-        true_frames = [] 
-        for file in os.listdir(pos_path):
-            true_frames.append(Image.open(os.path.join(pos_path, file)).convert("RGB"))
+            # get true frames
+            true_frames = [] 
+            for file in os.listdir(pos_path):
+                true_frames.append(Image.open(os.path.join(pos_path, file)).convert("RGB"))
 
-        # get top 4 frames
-        top_4_frames = get_top4_frames(video_path, caption, model, processor, device)
-        sim_95_score += sim_m(top_4_frames, true_frames, model, processor, 0.95)
-        sim_96_score += sim_m(top_4_frames, true_frames, model, processor, 0.96)
-        sim_97_score += sim_m(top_4_frames, true_frames, model, processor, 0.97)
-        sim_98_score += sim_m(top_4_frames, true_frames, model, processor, 0.98)
-        sim_99_score += sim_m(top_4_frames, true_frames, model, processor, 0.99)
-    print(f"Sim 95 Score: {sim_95_score / len(val_list)}")
-    print(f"Sim 96 Score: {sim_96_score / len(val_list)}")
-    print(f"Sim 97 Score: {sim_97_score / len(val_list)}")
-    print(f"Sim 98 Score: {sim_98_score / len(val_list)}")
-    print(f"Sim 99 Score: {sim_99_score / len(val_list)}")
+            # get top 4 frames
+            top_4_frames = get_top4_frames(video_path, caption, model, processor, device)
+            sim_95_score += sim_m(top_4_frames, true_frames, model, processor, 0.95)
+            sim_96_score += sim_m(top_4_frames, true_frames, model, processor, 0.96)
+            sim_97_score += sim_m(top_4_frames, true_frames, model, processor, 0.97)
+            sim_98_score += sim_m(top_4_frames, true_frames, model, processor, 0.98)
+            sim_99_score += sim_m(top_4_frames, true_frames, model, processor, 0.99)
+        print(f"Sim 95 Score: {sim_95_score / len(val_list)}")
+        print(f"Sim 96 Score: {sim_96_score / len(val_list)}")
+        print(f"Sim 97 Score: {sim_97_score / len(val_list)}")
+        print(f"Sim 98 Score: {sim_98_score / len(val_list)}")
+        print(f"Sim 99 Score: {sim_99_score / len(val_list)}")
 
     # Lưu model
     model.save_pretrained(output_path)

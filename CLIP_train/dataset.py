@@ -22,18 +22,23 @@ def load_data(json_path, image_path, setting=1, val_ratio=0.2, seed=42):
     random.seed(seed)
     random.shuffle(data)
 
-    # Split train/val
-    val_size = int(len(data) * val_ratio)
-    val_data = data[:val_size]
-    train_data = data[val_size:]
+    # Nếu val_ratio = 1 → bỏ qua val luôn
+    if val_ratio == 1:
+        train_data = data
+        val_data = []
+    else:
+        # Split train/val
+        val_size = int(len(data) * val_ratio)
+        val_data = data[:val_size]
+        train_data = data[val_size:]
 
-    base_pos = os.path.join(image_path, "frames_true")
-    base_neg = os.path.join(image_path, "frames_neg")
+    base_pos = os.path.join(image_path, "true_frames")
+    base_neg = os.path.join(image_path, "false_frames")
 
     train_list = []
     val_list = []
 
-    # ------ TRAIN: giữ logic cũ ------
+    # ------ TRAIN ------
     for item in train_data:
         choices_str = " ".join(item["choices"])
 
@@ -50,7 +55,7 @@ def load_data(json_path, image_path, setting=1, val_ratio=0.2, seed=42):
             "caption": caption
         })
 
-    # ------ VAL: thêm pos_path ------
+    # ------ VAL (bỏ qua nếu val_ratio = 1) ------
     for item in val_data:
         choices_str = " ".join(item["choices"])
 
