@@ -73,7 +73,8 @@ def get_top4_frames(
     # ---------------------------------------------------------
     # --- Compute similarity ---
     # ---------------------------------------------------------
-    scores = (img_embs @ text_emb.T).squeeze(1).cpu().tolist()
+    text_emb_cpu = text_emb.cpu()
+    scores = (img_embs @ text_emb_cpu.T).squeeze(1).tolist()
 
     # ---------------------------------------------------------
     # 🚀 Chia thành 4 đoạn bằng nhau
