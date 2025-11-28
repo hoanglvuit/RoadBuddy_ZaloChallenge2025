@@ -9,7 +9,7 @@ import math
 from transformers import get_cosine_schedule_with_warmup
 from evaluate import sim_m
 from PIL import Image
-from in_video_negative_mining import get_top4_frames
+from predict import get_top4_frames
 from loss import clip_loss_with_negatives
 from tqdm import tqdm
 
