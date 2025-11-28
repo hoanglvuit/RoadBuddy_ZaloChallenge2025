@@ -32,8 +32,8 @@ def load_data(json_path, image_path, setting=1, val_ratio=0.2, seed=42):
         val_data = data[:val_size]
         train_data = data[val_size:]
 
-    base_pos = os.path.join(image_path, "true_frames")
-    base_neg = os.path.join(image_path, "false_frames")
+    base_pos = os.path.join(image_path, "frames_true")
+    base_neg = os.path.join(image_path, "frames_neg")
 
     train_list = []
     val_list = []
