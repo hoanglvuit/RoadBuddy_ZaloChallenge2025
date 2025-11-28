@@ -112,8 +112,8 @@ if __name__ == "__main__":
     # evaluation 
     if val_list:
 
-        processor = AutoImageProcessor.from_pretrained('facebook/dinov2-large')
-        model = AutoModel.from_pretrained('facebook/dinov2-large')
+        processor_eval = AutoImageProcessor.from_pretrained('facebook/dinov2-large')
+        model_eval = AutoModel.from_pretrained('facebook/dinov2-large')
         sim_95_score = 0 
         sim_96_score = 0 
         sim_97_score = 0 
@@ -131,11 +131,11 @@ if __name__ == "__main__":
 
             # get top 4 frames
             top_4_frames, top_scores = get_top4_frames(video_path, caption, model, processor, device)
-            sim_95_score += sim_m(top_4_frames, true_frames, model, processor, 0.95)
-            sim_96_score += sim_m(top_4_frames, true_frames, model, processor, 0.96)
-            sim_97_score += sim_m(top_4_frames, true_frames, model, processor, 0.97)
-            sim_98_score += sim_m(top_4_frames, true_frames, model, processor, 0.98)
-            sim_99_score += sim_m(top_4_frames, true_frames, model, processor, 0.99)
+            sim_95_score += sim_m(top_4_frames, true_frames, model_eval, processor_eval, 0.95)
+            sim_96_score += sim_m(top_4_frames, true_frames, model_eval, processor_eval, 0.96)
+            sim_97_score += sim_m(top_4_frames, true_frames, model_eval, processor_eval, 0.97)
+            sim_98_score += sim_m(top_4_frames, true_frames, model_eval, processor_eval, 0.98)
+            sim_99_score += sim_m(top_4_frames, true_frames, model_eval, processor_eval, 0.99)
         print(f"Sim 95 Score: {sim_95_score / len(val_list)}")
         print(f"Sim 96 Score: {sim_96_score / len(val_list)}")
         print(f"Sim 97 Score: {sim_97_score / len(val_list)}")
