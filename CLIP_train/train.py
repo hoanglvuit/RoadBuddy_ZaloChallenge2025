@@ -37,7 +37,7 @@ if __name__ == "__main__":
         os.makedirs(output_path)
 
     # load dataset
-    train_list, val_list = load_data(json_path, image_path, setting)
+    train_list, val_list = load_data(json_path, image_path, setting, ratio)
     train_dataset = PosNegDataset(train_list)
     train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, collate_fn=custom_collate_fn)
 
