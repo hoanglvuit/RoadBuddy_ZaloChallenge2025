@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 true_frames.append(Image.open(os.path.join(pos_path, file)).convert("RGB"))
 
             # get top 4 frames
-            top_4_frames = get_top4_frames(video_path, caption, model, processor, device)
+            top_4_frames, top_scores = get_top4_frames(video_path, caption, model, processor, device)
             sim_95_score += sim_m(top_4_frames, true_frames, model, processor, 0.95)
             sim_96_score += sim_m(top_4_frames, true_frames, model, processor, 0.96)
             sim_97_score += sim_m(top_4_frames, true_frames, model, processor, 0.97)
@@ -133,6 +133,10 @@ if __name__ == "__main__":
         print(f"Sim 97 Score: {sim_97_score / len(val_list)}")
         print(f"Sim 98 Score: {sim_98_score / len(val_list)}")
         print(f"Sim 99 Score: {sim_99_score / len(val_list)}")
+    else: 
+        top_4_frames, top_scores = get_top4_frames("/kaggle/input/traffic-buddy/traffic_buddy_train+public_test/public_test/videos/efc9909e_908_clip_001_0000_0009_Y.mp4", "Theo trong video, nếu ô tô đi hướng chếch sang phải là hướng vào đường nào?", model, processor, device)
+        print(f"Top 4 Frames: {top_4_frames}")
+        print(f"Top Scores: {top_scores}")
 
     # Lưu model
     model.save_pretrained(output_path)
