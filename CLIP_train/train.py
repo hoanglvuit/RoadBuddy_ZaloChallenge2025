@@ -31,6 +31,8 @@ if __name__ == "__main__":
     image_path = args.image_path
     setting = args.setting
     output_path = args.output_path
+    ratio = args.ratio
+    model_name = args.model_name
 
     # create output path if not exists
     if not os.path.exists(output_path):
@@ -44,7 +46,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
     # load model
-    model, processor = load_model_to_train()
+    model, processor = load_model_to_train(model_name)
     model.to(device)
 
     # load optimizer
