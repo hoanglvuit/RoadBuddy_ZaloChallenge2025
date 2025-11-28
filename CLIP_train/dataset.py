@@ -19,6 +19,7 @@ def load_data(json_path, image_path, setting=1, val_ratio=0.2, seed=42):
         data = json.load(f)["data"]
 
     # Shuffle trước khi split
+    if val_ratio != 1:
     random.seed(seed)
     random.shuffle(data)
 
