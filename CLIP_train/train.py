@@ -25,6 +25,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_path", type=str, default="saved_models/clip-finetuned-posneg")
     parser.add_argument("--ratio", type=float, default=0.2)
     parser.add_argument("--model_name", type=str, default="openai/clip-vit-large-patch14")
+    parser.add_argument("--video_path", type=str, default="../dataset/train/videos")
 
     args = parser.parse_args()
     json_path = args.json_path
@@ -33,13 +34,13 @@ if __name__ == "__main__":
     output_path = args.output_path
     ratio = args.ratio
     model_name = args.model_name
-
+    video_path = args.video_path
     # create output path if not exists
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
     # load dataset
-    train_list, val_list = load_data(json_path, image_path, setting, ratio)
+    train_list, val_list = load_data(json_path, image_path, video_path, setting, ratio)
     train_dataset = PosNegDataset(train_list)
     train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, collate_fn=custom_collate_fn)
 

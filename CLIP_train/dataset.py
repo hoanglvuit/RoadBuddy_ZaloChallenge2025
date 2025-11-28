@@ -4,7 +4,7 @@ import os
 from torch.utils.data import Dataset
 import random
 
-def load_data(json_path, image_path, setting=1, val_ratio=0.2, seed=42):
+def load_data(json_path, image_path,video_path, setting=1, val_ratio=0.2, seed=42):
     """
     setting = 1: only question 
     setting = 2: only choices 
@@ -69,7 +69,7 @@ def load_data(json_path, image_path, setting=1, val_ratio=0.2, seed=42):
 
         val_list.append({
             "caption": caption,
-            "video_path": item.get("video_path", ""),
+            "video_path": os.path.join(video_path, item.get("video_path", "")),
             "pos_path": os.path.join(base_pos, item['id'])
         })
 
