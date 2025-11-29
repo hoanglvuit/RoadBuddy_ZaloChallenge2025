@@ -127,7 +127,7 @@ if __name__ == "__main__":
             # get true frames
             true_frames = [] 
             for file in os.listdir(pos_path):
-                true_frames.append(Image.open(os.path.join(pos_path, file)).convert("RGB"))
+                true_frames.append(Image.open(os.path.join(pos_path, file)).convert("RGB").resize((1920, 1080)))
 
             # get top 4 frames
             top_4_frames, top_scores = get_top4_frames(video_path, caption, model, processor, device)
