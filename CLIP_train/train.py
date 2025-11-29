@@ -21,26 +21,28 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--json_path", type=str, default="../dataset/train/train.json")
     parser.add_argument("--image_path", type=str, default="dataset")
-    parser.add_argument("--setting", type=int, default=1)
+    parser.add_argument("--caption_setting", type=int, default=1)
     parser.add_argument("--output_path", type=str, default="saved_models/clip-finetuned-posneg")
     parser.add_argument("--ratio", type=float, default=0.2)
     parser.add_argument("--model_name", type=str, default="openai/clip-vit-large-patch14")
     parser.add_argument("--video_path", type=str, default="../dataset/train/videos")
+    parser.add_argument("--loss_setting", type=int, default=1)
 
     args = parser.parse_args()
     json_path = args.json_path
     image_path = args.image_path
-    setting = args.setting
+    caption_setting = args.caption_setting
     output_path = args.output_path
     ratio = args.ratio
     model_name = args.model_name
     video_path = args.video_path
+    loss_setting = args.loss_setting
     # create output path if not exists
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
     # load dataset
-    train_list, val_list = load_data(json_path, image_path, video_path, setting, ratio)
+    train_list, val_list = load_data(json_path, image_path, video_path, caption_setting, ratio)
     train_dataset = PosNegDataset(train_list)
     train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True, collate_fn=custom_collate_fn)
 
@@ -77,7 +79,7 @@ if __name__ == "__main__":
             pos_imgs = batch["pos_imgs"][0]
             neg_imgs = batch["neg_imgs"][0]
 
-            loss = clip_loss_with_negatives(model, processor, caption, pos_imgs, neg_imgs, device)
+            loss = clip_loss_with_negatives(model, processor, caption, pos_imgs, neg_imgs, device, loss_setting)
             if loss is None:
                 continue
 
