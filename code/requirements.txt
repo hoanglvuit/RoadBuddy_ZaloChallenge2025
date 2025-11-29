@@ -1,0 +1,5 @@
+transformers==4.57.1
+opencv-python==4.12.0.88
+Pillow==11.3.0
+numpy
+accelerate==1.11.0

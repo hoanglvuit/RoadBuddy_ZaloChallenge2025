@@ -19,12 +19,12 @@ def load_data(json_path, image_path,video_path, setting=1, val_ratio=0.2, seed=4
         data = json.load(f)["data"]
 
     # Shuffle trước khi split
-    if val_ratio != 1:
+    if val_ratio != 0:
         random.seed(seed)
         random.shuffle(data)
 
-    # Nếu val_ratio = 1 → bỏ qua val luôn
-    if val_ratio == 1:
+    # Nếu val_ratio = 0 → bỏ qua val luôn
+    if val_ratio == 0:
         train_data = data
         val_data = []
     else:
@@ -56,7 +56,7 @@ def load_data(json_path, image_path,video_path, setting=1, val_ratio=0.2, seed=4
             "caption": caption
         })
 
-    # ------ VAL (bỏ qua nếu val_ratio = 1) ------
+    # ------ VAL (bỏ qua nếu val_ratio = 0) ------
     for item in val_data:
         choices_str = " ".join(item["choices"])
 
