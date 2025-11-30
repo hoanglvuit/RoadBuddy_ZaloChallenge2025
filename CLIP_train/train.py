@@ -27,6 +27,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", type=str, default="openai/clip-vit-large-patch14")
     parser.add_argument("--video_path", type=str, default="../dataset/train/videos")
     parser.add_argument("--loss_setting", type=int, default=1)
+    parser.add_argument("--only_test", action="store_true")
 
     args = parser.parse_args()
     json_path = args.json_path
@@ -37,6 +38,7 @@ if __name__ == "__main__":
     model_name = args.model_name
     video_path = args.video_path
     loss_setting = args.loss_setting
+    only_test = args.only_test
     # create output path if not exists
     if not os.path.exists(output_path):
         os.makedirs(output_path)
@@ -69,46 +71,47 @@ if __name__ == "__main__":
     model.train()
 
     # training
-    for epoch in range(num_epochs):
-        total_loss = 0
-        count = 0
-        optimizer.zero_grad()
+    if not only_test:
+        for epoch in range(num_epochs):
+            total_loss = 0
+            count = 0
+            optimizer.zero_grad()
 
-        for batch_idx, batch in enumerate(train_dataloader, start=1):
-            caption = batch["caption"][0]
-            pos_imgs = batch["pos_imgs"][0]
-            neg_imgs = batch["neg_imgs"][0]
+            for batch_idx, batch in enumerate(train_dataloader, start=1):
+                caption = batch["caption"][0]
+                pos_imgs = batch["pos_imgs"][0]
+                neg_imgs = batch["neg_imgs"][0]
 
-            loss = clip_loss_with_negatives(model, processor, caption, pos_imgs, neg_imgs, device, loss_setting)
-            if loss is None:
-                continue
+                loss = clip_loss_with_negatives(model, processor, caption, pos_imgs, neg_imgs, device, loss_setting)
+                if loss is None:
+                    continue
 
-            # Chia loss ra để tránh tích gradient quá lớn
-            loss = loss / accumulation_steps
-            loss.backward()
+                # Chia loss ra để tránh tích gradient quá lớn
+                loss = loss / accumulation_steps
+                loss.backward()
 
-            total_loss += loss.item() * accumulation_steps  # để giữ nguyên giá trị thực tế
-            count += 1
+                total_loss += loss.item() * accumulation_steps  # để giữ nguyên giá trị thực tế
+                count += 1
 
-            # ✅ Chỉ update sau mỗi accumulation_steps batch
-            if batch_idx % accumulation_steps == 0:
-                optimizer.step()
-                scheduler.step()
-                optimizer.zero_grad()
+                # ✅ Chỉ update sau mỗi accumulation_steps batch
+                if batch_idx % accumulation_steps == 0:
+                    optimizer.step()
+                    scheduler.step()
+                    optimizer.zero_grad()
 
-            # In ra loss sau mỗi 25 batch
-            if batch_idx % 25 == 0:
-                avg_loss = total_loss / max(count, 1)
-                print(f"Batch {batch_idx} - Current Avg Loss: {avg_loss:.4f}")
-                
-        # Epoch summary
-        avg_loss = total_loss / max(count, 1)
-        print(f"✅ Epoch {epoch+1}/{num_epochs} - Epoch Avg Loss: {avg_loss:.4f}")
-    
-    # Lưu model
-    model.save_pretrained(output_path)
-    processor.save_pretrained(output_path)
-    print(f"🎉 Fine-tune CLIP xong, model lưu tại {output_path}")
+                # In ra loss sau mỗi 25 batch
+                if batch_idx % 25 == 0:
+                    avg_loss = total_loss / max(count, 1)
+                    print(f"Batch {batch_idx} - Current Avg Loss: {avg_loss:.4f}")
+                    
+            # Epoch summary
+            avg_loss = total_loss / max(count, 1)
+            print(f"✅ Epoch {epoch+1}/{num_epochs} - Epoch Avg Loss: {avg_loss:.4f}")
+        
+        # Lưu model
+        model.save_pretrained(output_path)
+        processor.save_pretrained(output_path)
+        print(f"🎉 Fine-tune CLIP xong, model lưu tại {output_path}")
 
         
     # evaluation 
